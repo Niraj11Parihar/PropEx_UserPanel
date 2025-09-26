@@ -36,7 +36,7 @@ if (session_status() === PHP_SESSION_NONE) {
               class="nav-link <?php echo (basename($_SERVER['PHP_SELF']) == 'home.php') ? 'active' : ''; ?>">
               Home
             </a>
-            <a href="/UserPanel/templates/aboutUs.php"
+            <a href="/templates/aboutUs.php"
               class="nav-link <?php echo (basename($_SERVER['PHP_SELF']) == 'aboutUs.php') ? 'active' : ''; ?>">
               AboutUs
             </a>
