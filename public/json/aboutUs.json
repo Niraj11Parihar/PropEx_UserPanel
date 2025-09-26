@@ -1,0 +1,91 @@
+{
+    "hero": {
+        "title": "PropEx: Your Gateway to Smart Property Exchange",
+        "subtitle": "Discover a revolutionary platform designed to optimize your real estate investments with unparalleled flexibility."
+    },
+    "about_us": {
+        "heading": "What is PropEx?",
+        "paragraphs": [
+            "PropEx is an innovative online property exchange application dedicated to providing you with the best deals for good investments. We've reimagined how individuals interact with the real estate market, offering a streamlined, transparent, and flexible platform.",
+            "Our mission is to empower both property owners and potential buyers by facilitating seamless transactions, whether you're looking to acquire a complete property or invest in fractional ownership."
+        ],
+        "image_path": "../public/images/aboutUs1.png",
+        "image_alt": "3D visualization of a property and investment graphs"
+    },
+    "our_services": {
+        "heading": "Our Core Services",
+        "services": [
+            {
+                "icon_code": "&#127968;",
+                "title": "Flexible Property Listing",
+                "description": "With PropEx, you have the power to list your properties on the market with unprecedented flexibility. Choose to list your entire property, or break it down into smaller, manageable portions for broader appeal."
+            },
+            {
+                "icon_code": "&#128187;",
+                "title": "Fractional Ownership Opportunities",
+                "description": "Revolutionize your investment strategy! Property owners can list as little as 25% of their property on the market. This allows for partial sales, giving you liquidity without divesting completely."
+            },
+            {
+                "icon_code": "&#128176;",
+                "title": "Diverse Purchase Options",
+                "description": "Users can purchase properties either whole or in various ratios. This means you can acquire exactly the share you desire, from a full property to a specific percentage, tailoring investments to your budget and goals."
+            },
+            {
+                "icon_code": "&#128274;",
+                "title": "Guaranteed Ownership",
+                "description": "When you purchase a portion of a property, you receive direct ownership of that fractional share. PropEx ensures all transactions are secure, transparent, and legally sound, providing peace of mind."
+            }
+        ]
+    },
+    "benefits": {
+        "heading": "Benefits of Using PropEx",
+        "items": [
+            {
+                "icon_code": "&#128193;",
+                "title": "Enhanced Liquidity",
+                "description": "Quickly convert a portion of your property's value into cash without selling the entire asset. The fractional model opens up new avenues for accessing capital."
+            },
+            {
+                "icon_code": "&#128202;",
+                "title": "Access to High-Value Assets",
+                "description": "Invest in prime real estate that was previously out of reach. Fractional ownership allows you to diversify your portfolio by acquiring smaller stakes in high-performing properties."
+            },
+            {
+                "icon_code": "&#128221;",
+                "title": "Simplified Process",
+                "description": "Our platform streamlines the entire real estate transaction process. From listing to ownership transfer, we provide a guided, user-friendly experience."
+            },
+            {
+                "icon_code": "&#128269;",
+                "title": "Market Transparency",
+                "description": "All listings and transactions are transparent, giving you clear insights into market values and opportunities. Make informed decisions with access to reliable data."
+            }
+        ]
+    },
+    "how_it_works": {
+        "heading": "How It Works",
+        "steps": [
+            {
+                "number": "1",
+                "title": "Create Your Account",
+                "description": "Sign up and create your PropEx profile. The process is quick, secure, and gets you ready to start your investment journey."
+            },
+            {
+                "number": "2",
+                "title": "List or Browse Properties",
+                "description": "Property owners can create a new listing for a full or fractional share. Investors can browse our curated selection of properties and filter by location, type, and ownership percentage."
+            },
+            {
+                "number": "3",
+                "title": "Exchange & Own",
+                "description": "Finalize your transaction with our secure system. Once complete, you will hold direct, verified ownership of your new property share."
+            }
+        ]
+    },
+    "cta": {
+        "title": "Ready to Experience the Future of Property Exchange?",
+        "subtitle": "Join PropEx today and unlock a world of smart investments and flexible property solutions.",
+        "button_text": "Get Started Now",
+        "button_link": "register.php"
+    }
+}
