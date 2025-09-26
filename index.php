@@ -23,11 +23,11 @@ include 'src/includes/header.php';
         </p>
 
         <div class="flex flex-col sm:flex-row justify-center gap-6 animate-scale-in">
-            <a href="/PropEx/UserPanel/explore.php"
+            <a href="/UserPanel/explore.php"
                 class="px-8 py-4 btn-primary rounded-full text-lg transition-all duration-300 transform hover:scale-105 shadow-lg active:scale-95 focus:outline-none focus:ring-2 focus:ring-brand-primary">
                 Explore Community
             </a>
-            <a href="/PropEx/UserPanel/templates/register.php"
+            <a href="/UserPanel/templates/register.php"
                 class="px-8 py-4 border-2 border-brand-secondary text-brand-secondary font-bold rounded-full text-lg hover:bg-brand-secondary hover:text-white transition-all duration-300 transform hover:scale-105 shadow-lg active:scale-95 focus:outline-none focus:ring-2 focus:ring-brand-secondary">
                 Join PropEx Today
             </a>

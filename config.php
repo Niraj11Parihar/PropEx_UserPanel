@@ -1,18 +1,19 @@
-    <?php
-    // Database configuration
-    define('DB_HOST', 'localhost');
-    define('DB_USER', 'root'); // Change to your MySQL username
-    define('DB_PASS', '');     // Change to your MySQL password
-    define('DB_NAME', 'propex_database');
-    $secret_key = "your-secret-key";
-    $secret_iv  = "your-secret-iv";
+<?php
+// Database configuration (from environment variables)
+define('DB_HOST', getenv('DB_HOST'));
+define('DB_USER', getenv('DB_USER'));
+define('DB_PASS', getenv('DB_PASS'));
+define('DB_NAME', getenv('DB_NAME'));
 
-    // Connect to MySQL
-    $conn = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
+// Encryption keys
+$secret_key = getenv('SECRET_KEY');
+$secret_iv  = getenv('SECRET_IV');
 
-    // Check connection
-    if ($conn->connect_error) {
-        die("Connection failed: " . $conn->connect_error);
-    }
+// Connect to MySQL
+$conn = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
 
-    ?>
+// Check connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+?>
