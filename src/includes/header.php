@@ -13,7 +13,7 @@ if (session_status() === PHP_SESSION_NONE) {
   <title>PropEx - Sustainable Communities</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/UserPanel/public/css/style.css">
+  <link rel="stylesheet" href="/public/css/style.css">
 </head>
 
 <body class="min-h-screen flex flex-col bg-primary text-primary">
@@ -24,7 +24,7 @@ if (session_status() === PHP_SESSION_NONE) {
       <div class="flex justify-between items-center h-16">
 
         <!-- Logo -->
-        <a href="/UserPanel/<?php echo isset($_SESSION['user_id']) ? 'templates/home.php' : 'templates/index.php'; ?>"
+        <a href="/<?php echo isset($_SESSION['user_id']) ? 'templates/home.php' : 'templates/index.php'; ?>"
           class="text-4xl font-extrabold brand-primary">
           Prop<span class="brand-secondary">Ex</span>
         </a>
@@ -32,7 +32,7 @@ if (session_status() === PHP_SESSION_NONE) {
         <!-- Desktop Menu -->
         <div class="hidden lg:flex space-x-8">
           <?php if (isset($_SESSION['user_id'])): ?>
-            <a href="/UserPanel/templates/home.php"
+            <a href="/templates/home.php"
               class="nav-link <?php echo (basename($_SERVER['PHP_SELF']) == 'home.php') ? 'active' : ''; ?>">
               Home
             </a>
@@ -40,17 +40,17 @@ if (session_status() === PHP_SESSION_NONE) {
               class="nav-link <?php echo (basename($_SERVER['PHP_SELF']) == 'aboutUs.php') ? 'active' : ''; ?>">
               AboutUs
             </a>
-            <a href="/UserPanel/templates/profile.php" class="nav-link accent-negative">Profile</a>
+            <a href="/templates/profile.php" class="nav-link accent-negative">Profile</a>
           <?php else: ?>
-            <a href="/UserPanel/templates/index.php"
+            <a href="/templates/index.php"
               class="nav-link <?php echo (basename($_SERVER['PHP_SELF']) == 'index.php') ? 'active' : ''; ?>">
               Dashboard
             </a>
-            <a href="/UserPanel/templates/aboutUs.php"
+            <a href="/templates/aboutUs.php"
               class="nav-link <?php echo (basename($_SERVER['PHP_SELF']) == 'aboutUs.php') ? 'active' : ''; ?>">
               AboutUs
             </a>
-            <a href="/UserPanel/templates/login.php" class="nav-link btn-secondary">Login</a>
+            <a href="/templates/login.php" class="nav-link btn-secondary">Login</a>
           <?php endif; ?>
         </div>
 
@@ -66,13 +66,13 @@ if (session_status() === PHP_SESSION_NONE) {
     <!-- Mobile Menu -->
     <div id="mobile-menu" class="hidden lg:hidden bg-white shadow-md">
       <div class="flex flex-col space-y-4 px-6 py-4">
-        <a href="/UserPanel/index.php" class="nav-link <?php echo (basename($_SERVER['PHP_SELF']) == 'index.php') ? 'active' : ''; ?>">Home</a>
-        <a href="/UserPanel/templates/aboutUs.php" class="nav-link <?php echo (basename($_SERVER['PHP_SELF']) == 'aboutUs.php') ? 'active' : ''; ?>">AboutUs</a>
+        <a href="/index.php" class="nav-link <?php echo (basename($_SERVER['PHP_SELF']) == 'index.php') ? 'active' : ''; ?>">Home</a>
+        <a href="/templates/aboutUs.php" class="nav-link <?php echo (basename($_SERVER['PHP_SELF']) == 'aboutUs.php') ? 'active' : ''; ?>">AboutUs</a>
         <?php if (isset($_SESSION['user_id'])): ?>
-          <a href="/UserPanel/templates/dashboard.php" class="nav-link <?php echo (basename($_SERVER['PHP_SELF']) == 'dashboard.php') ? 'active' : ''; ?>">Dashboard</a>
-          <a href="/UserPanel/templates/profile.php" class="nav-link accent-negative">Profile</a>
+          <a href="/templates/dashboard.php" class="nav-link <?php echo (basename($_SERVER['PHP_SELF']) == 'dashboard.php') ? 'active' : ''; ?>">Dashboard</a>
+          <a href="/templates/profile.php" class="nav-link accent-negative">Profile</a>
         <?php else: ?>
-          <a href="/UserPanel/templates/login.php" class="nav-link btn-secondary">Login</a>
+          <a href="/templates/login.php" class="nav-link btn-secondary">Login</a>
         <?php endif; ?>
       </div>
     </div>
