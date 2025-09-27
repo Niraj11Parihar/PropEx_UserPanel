@@ -49,7 +49,7 @@ if (!$property_id) {
         const messageBox = document.getElementById('listing-message');
 
         try {
-            const response = await fetch('/PropEx/UserPanel/src/api/Property/create_listing.php', {
+            const response = await fetch('/src/api/Property/create_listing.php', {
                 method: 'POST',
                 body: formData
             });
@@ -57,7 +57,7 @@ if (!$property_id) {
             if (result.success) {
                 messageBox.innerHTML = `<p class="text-green-600 font-bold">${result.message}</p>`;
                 setTimeout(() => {
-                    window.location.href = "/PropEx/UserPanel/templates/portfolio.php";
+                    window.location.href = "/templates/portfolio.php";
                 }, 2000);
             } else {
                 messageBox.innerHTML = `<p class="text-red-600 font-bold">${result.message}</p>`;

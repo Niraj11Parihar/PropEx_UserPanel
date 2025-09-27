@@ -85,7 +85,7 @@ include __DIR__ . '/../src/includes/backButton.php';
         loadingSpinner.classList.remove('hidden');
 
         try {
-            const response = await fetch('/PropEx/UserPanel/src/api/Property/create_property.php', {
+            const response = await fetch('/src/api/Property/create_property.php', {
                 method: 'POST',
                 body: formData
             });
@@ -98,7 +98,7 @@ include __DIR__ . '/../src/includes/backButton.php';
                 formMessage.classList.add('text-green-600');
                 form.reset();
                 setTimeout(() => {
-                    window.location.href = '/PropEx/UserPanel/templates/portfolio.php';
+                    window.location.href = '/templates/portfolio.php';
                 }, 2000);
             } else {
                 throw new Error(result.message || 'Something went wrong.');

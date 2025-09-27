@@ -7,7 +7,7 @@ include __DIR__ . '/../src/includes/header.php';
         <div class="flex flex-col md:flex-row items-center justify-between mb-8">
             <h1 class="text-4xl font-extrabold text-gray-900 mb-4 md:mb-0">Explore Properties</h1>
             <div class="space-x-4">
-                <a href="/PropEx/UserPanel/templates/portfolio.php" class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-xl shadow-sm text-brand-primary bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-primary transition">
+                <a href="/templates/portfolio.php" class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-xl shadow-sm text-brand-primary bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-primary transition">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
                         <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
                     </svg>
@@ -53,7 +53,7 @@ include __DIR__ . '/../src/includes/header.php';
         // 1. Fetch user verification status first
         async function checkVerificationStatus() {
             try {
-                const userResponse = await fetch('/PropEx/UserPanel/src/api/User/user_data.php');
+                const userResponse = await fetch('/src/api/User/user_data.php');
                 if (userResponse.ok) {
                     const userResult = await userResponse.json();
                     if (userResult.success && userResult.data) {
@@ -74,7 +74,7 @@ include __DIR__ . '/../src/includes/header.php';
             await checkVerificationStatus();
 
             try {
-                const response = await fetch('/PropEx/UserPanel/src/api/Property/get_all_properties.php');
+                const response = await fetch('/src/api/Property/get_all_properties.php');
                 if (!response.ok) throw new Error('Failed to fetch listings.');
                 const data = await response.json();
 
@@ -114,7 +114,7 @@ include __DIR__ . '/../src/includes/header.php';
                         
                         cardWrapper.addEventListener('click', (event) => {
                             if (isUserVerified) {
-                                window.location.href = `/PropEx/UserPanel/templates/singlePropertyDetail.php?listing_id=${listing.listing_id}`;
+                                window.location.href = `/templates/singlePropertyDetail.php?listing_id=${listing.listing_id}`;
                             } else {
                                 event.preventDefault();
                                 alert('Please complete your profile verification to view property details.');
@@ -140,7 +140,7 @@ include __DIR__ . '/../src/includes/header.php';
         // 3. Add a click handler to the "List a Property" button
         listPropertyBtn.addEventListener('click', (event) => {
             if (isUserVerified) {
-                window.location.href = '/PropEx/UserPanel/templates/listProperties.php';
+                window.location.href = '/templates/listProperties.php';
             } else {
                 event.preventDefault();
                 alert('Please complete your profile verification to list a property.');
