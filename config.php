@@ -10,6 +10,7 @@ $secret_key = getenv('SECRET_KEY');
 $secret_iv  = getenv('SECRET_IV');
 
 // Connect to MySQL
+var_dump(DB_HOST);
 $conn = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
 
 // Check connection
