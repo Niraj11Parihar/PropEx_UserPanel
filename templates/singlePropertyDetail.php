@@ -4,7 +4,8 @@ include __DIR__ . '/../src/includes/header.php';
 
 // Check if a listing_id is provided in the URL
 if (!isset($_GET['listing_id'])) {
-    header("Location: /PropEx/UserPanel/index.php");
+    require_once __DIR__ . '/../config.php';
+    header("Location: " . url('index.php'));
     exit();
 }
 
@@ -86,7 +87,7 @@ if (!$listing_details) {
         <div class="bg-white rounded-3xl shadow-xl p-8 md:p-12 lg:p-16 mb-8">
             <div class="flex flex-col lg:flex-row gap-8">
                 <div class="lg:w-1/2">
-                    <img src="/PropEx/AdminPanel/public/<?php echo htmlspecialchars($listing_details['property_image']); ?>" alt="<?php echo htmlspecialchars($listing_details['property_name']); ?>" class="w-full h-96 object-cover rounded-2xl shadow-md">
+                    <img src="<?php echo url('AdminPanel/public/' . htmlspecialchars($listing_details['property_image'])); ?>" alt="<?php echo htmlspecialchars($listing_details['property_name']); ?>" class="w-full h-96 object-cover rounded-2xl shadow-md">
                 </div>
                 <div class="lg:w-1/2">
                     <h1 class="text-4xl md:text-5xl font-extrabold text-gray-900 mb-2"><?php echo htmlspecialchars($listing_details['property_name']); ?></h1>
@@ -129,7 +130,7 @@ if (!$listing_details) {
                             <p class="text-blue-800">This is your listing. You cannot purchase your own property share.</p>
                         </div>
                     <?php else: ?>
-                        <a href="/PropEx/auth/login.php" class="w-full inline-flex items-center justify-center px-8 py-4 border border-transparent text-lg font-bold rounded-xl shadow-sm text-white bg-brand-primary hover:bg-brand-secondary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-primary transition">
+                        <a href="<?php echo url('templates/login.php'); ?>" class="w-full inline-flex items-center justify-center px-8 py-4 border border-transparent text-lg font-bold rounded-xl shadow-sm text-white bg-brand-primary hover:bg-brand-secondary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-primary transition">
                             Login to Purchase
                         </a>
                     <?php endif; ?>
@@ -196,14 +197,14 @@ if (!$listing_details) {
 
                     if (!buyer_user_id) {
                         alert('You must be logged in to purchase a property.');
-                        window.location.href = '/PropEx/auth/login.php';
+                        window.location.href = baseUrl('templates/login.php');
                         return;
                     }
                     
                     confirmPurchaseBtn.innerText = 'Processing Payment...';
                     confirmPurchaseBtn.disabled = true;
                     
-                    const response = await fetch('/PropEx/UserPanel/src/api/Property/property_purchase.php', {
+                    const response = await fetch(baseUrl('src/api/Property/property_purchase.php'), {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',

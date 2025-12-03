@@ -1,5 +1,15 @@
 <?php
 // PropEx/UserPanel/portfolio.php
+ini_set('session.cookie_path', '/');
+session_start();
+
+// Check if user is logged in
+if (!isset($_SESSION['user_id'])) {
+    require_once __DIR__ . '/../config.php';
+    header('Location: ' . url('templates/login.php'));
+    exit();
+}
+
 include __DIR__ . '/../src/includes/header.php';
 include __DIR__ . '/../src/includes/backButton.php';
 ?>
@@ -7,7 +17,7 @@ include __DIR__ . '/../src/includes/backButton.php';
     <div class="container mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex flex-col md:flex-row items-center justify-between mb-8">
             <h1 class="text-4xl font-extrabold text-gray-900 mb-4 md:mb-0">My Portfolio</h1>
-            <a href="/PropEx/UserPanel/templates/listProperties.php" class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-xl shadow-sm text-white bg-brand-primary hover:bg-brand-secondary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-primary transition">
+            <a href="<?php echo url('templates/listProperties.php'); ?>" class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-xl shadow-sm text-white bg-brand-primary hover:bg-brand-secondary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-primary transition">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
                     <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clip-rule="evenodd" />
                 </svg>
@@ -20,7 +30,7 @@ include __DIR__ . '/../src/includes/backButton.php';
 
         <div id="no-properties-message" class="text-center text-gray-500 mt-12 hidden">
             <p>You do not currently own any properties.</p>
-            <a href="/PropEx/UserPanel/index.php" class="text-brand-primary font-semibold mt-2 block hover:underline">Explore the Marketplace</a>
+            <a href="<?php echo url('index.php'); ?>" class="text-brand-primary font-semibold mt-2 block hover:underline">Explore the Marketplace</a>
         </div>
 
     </div>
@@ -32,7 +42,7 @@ include __DIR__ . '/../src/includes/backButton.php';
 
         async function fetchUserProperties() {
             try {
-                const response = await fetch('/PropEx/UserPanel/src/api/Property/get_user_properties.php');
+                const response = await fetch(baseUrl('src/api/Property/get_user_properties.php'));
                 if (!response.ok) throw new Error('Failed to fetch portfolio.');
                 const data = await response.json();
 
@@ -44,7 +54,7 @@ include __DIR__ . '/../src/includes/backButton.php';
                         const card = document.createElement('div');
                         card.classList.add('bg-white', 'rounded-3xl', 'p-6', 'shadow-xl', 'hover:shadow-2xl', 'transition-transform', 'duration-300', 'hover:-translate-y-2');
                         card.innerHTML = `
-                            <img src="/PropEx/AdminPanel/public/${property.property_image}" alt="${property.property_name}" class="w-full h-48 object-cover rounded-2xl mb-4">
+                            <img src="${baseUrl('AdminPanel/public/' + property.property_image)}" alt="${property.property_name}" class="w-full h-48 object-cover rounded-2xl mb-4">
                             <h3 class="text-xl font-bold text-gray-900 truncate mb-1">${property.property_name}</h3>
                             <p class="text-sm text-gray-600 mb-4 truncate"><svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline-block mr-1 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.8A2 2 0 0112 21.414V19a2 2 0 00-2-2H4a2 2 0 01-2-2V5a2 2 0 012-2h12a2 2 0 012 2v12z" /></svg>${property.location}</p>
                             <p class="text-2xl font-extrabold text-brand-primary">
@@ -52,7 +62,7 @@ include __DIR__ . '/../src/includes/backButton.php';
                             </p>
                             <p class="text-lg font-bold text-gray-700"><span class="text-base font-semibold text-gray-500">Estimated Value:</span>₹${estimatedValue}</p>
                             <div class="mt-6">
-                                <a href="/PropEx/UserPanel/templates/listingForSale.php?property_id=${property.property_id}" class="w-full inline-block text-center px-4 py-3 bg-brand-primary text-white font-semibold rounded-lg hover:bg-brand-secondary transition">
+                                <a href="${baseUrl('templates/listingForSale.php?property_id=' + property.property_id)}" class="w-full inline-block text-center px-4 py-3 bg-brand-primary text-white font-semibold rounded-lg hover:bg-brand-secondary transition">
                                     List My Share
                                 </a>
                             </div>

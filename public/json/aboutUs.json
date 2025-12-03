@@ -9,7 +9,7 @@
             "PropEx is an innovative online property exchange application dedicated to providing you with the best deals for good investments. We've reimagined how individuals interact with the real estate market, offering a streamlined, transparent, and flexible platform.",
             "Our mission is to empower both property owners and potential buyers by facilitating seamless transactions, whether you're looking to acquire a complete property or invest in fractional ownership."
         ],
-        "image_path": "../public/images/aboutUs1.png",
+        "image_path": "public/images/aboutUs1.png",
         "image_alt": "3D visualization of a property and investment graphs"
     },
     "our_services": {
@@ -86,6 +86,6 @@
         "title": "Ready to Experience the Future of Property Exchange?",
         "subtitle": "Join PropEx today and unlock a world of smart investments and flexible property solutions.",
         "button_text": "Get Started Now",
-        "button_link": "register.php"
+        "button_link": "templates/register.php"
     }
 }

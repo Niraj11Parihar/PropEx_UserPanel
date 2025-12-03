@@ -1,11 +1,44 @@
 <?php
-// UserPanel/src/api/User/user_profile_api.php
-header('Content-Type: application/json');
-ini_set('display_errors', 1);
+// UserPanel/src/api/User/user_data.php
+// Set headers first before any output
+header('Content-Type: application/json; charset=utf-8');
+header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Methods: GET, POST');
+
+// Start output buffering to catch any errors
+ob_start();
+
+ini_set('session.cookie_path', '/');
+ini_set('display_errors', 0); // Don't display errors, return JSON instead
 error_reporting(E_ALL);
 
 session_start();
-require_once __DIR__ . '/../../../config.php';
+
+// Fix path to config.php - from UserPanel/src/api/User/ to UserPanel/
+// Normalize path separators for cross-platform compatibility
+$config_path = dirname(dirname(__DIR__)) . DIRECTORY_SEPARATOR . 'config.php';
+$config_path = realpath($config_path);
+
+if (!$config_path || !file_exists($config_path)) {
+    ob_end_clean();
+    http_response_code(500);
+    $expected_path = dirname(dirname(__DIR__)) . DIRECTORY_SEPARATOR . 'config.php';
+    echo json_encode(['success' => false, 'message' => 'Config file not found. Expected at: ' . $expected_path . ' (resolved: ' . ($config_path ?: 'not found') . ')']);
+    exit();
+}
+
+// Suppress any output from config.php
+ob_start();
+require_once $config_path;
+$config_output = ob_get_clean();
+
+// If config.php output anything, it's an error
+if (!empty($config_output) && !empty(trim($config_output))) {
+    ob_end_clean();
+    http_response_code(500);
+    echo json_encode(['success' => false, 'message' => 'Config file error: Output detected']);
+    exit();
+}
 
 // Check if user is logged in
 $user_id = $_SESSION['user_id'] ?? null;
@@ -239,6 +272,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     echo json_encode(['success' => false, 'message' => 'Method Not Allowed.']);
 }
 
-$conn->close();
+// Don't close the connection as it's shared from config.php
+// $conn->close();
 exit();
 ?>

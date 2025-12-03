@@ -1,9 +1,12 @@
+# InfinityFree compatible .htaccess
+# Allow direct access to all existing files and directories
+# Only route non-existent files to index.php
+
+<IfModule mod_rewrite.c>
 RewriteEngine On
 
-# Redirect to public directory
-RewriteRule ^public/ - [L]
-
-# Redirect all requests to index if not a real file
+# Don't rewrite if file exists
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^ index.php [L]
+</IfModule>

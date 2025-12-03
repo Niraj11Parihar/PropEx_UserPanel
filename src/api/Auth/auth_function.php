@@ -82,6 +82,7 @@ function loginUser($conn, $data)
             $_SESSION['user_id'] = $user['user_id'];
             $_SESSION['fullName'] = $user['full_name'];
             $_SESSION['email'] = $user['email'];
+            $_SESSION['username'] = $user['full_name']; // For compatibility
             return true;
         }
     }
