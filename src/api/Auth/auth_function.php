@@ -18,8 +18,14 @@ function validateRegistration($data)
 
     if (empty($data['password'])) {
         $errors['password'] = "Password is required";
-    } elseif (strlen($data['password']) < 6) {
-        $errors['password'] = "Password must be at least 6 characters";
+    } elseif (strlen($data['password']) < 8) {
+        $errors['password'] = "Password must be at least 8 characters";
+    } elseif (!preg_match('/[A-Za-z]/', $data['password'])) {
+        $errors['password'] = "Password must contain at least one alphabet";
+    } elseif (!preg_match('/[0-9]/', $data['password'])) {
+        $errors['password'] = "Password must contain at least one number";
+    } elseif (!preg_match('/[^A-Za-z0-9]/', $data['password'])) {
+        $errors['password'] = "Password must contain at least one special character";
     }
 
     if ($data['password'] !== $data['confirm_password']) {

@@ -54,7 +54,7 @@ include __DIR__ . '/../src/includes/backButton.php';
                         const card = document.createElement('div');
                         card.classList.add('bg-white', 'rounded-3xl', 'p-6', 'shadow-xl', 'hover:shadow-2xl', 'transition-transform', 'duration-300', 'hover:-translate-y-2');
                         card.innerHTML = `
-                            <img src="${baseUrl('AdminPanel/public/' + property.property_image)}" alt="${property.property_name}" class="w-full h-48 object-cover rounded-2xl mb-4">
+                            <img src="${baseUrl('../AdminPanel/public/' + property.property_image)}" alt="${property.property_name}" class="w-full h-48 object-cover rounded-2xl mb-4">
                             <h3 class="text-xl font-bold text-gray-900 truncate mb-1">${property.property_name}</h3>
                             <p class="text-sm text-gray-600 mb-4 truncate"><svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline-block mr-1 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.8A2 2 0 0112 21.414V19a2 2 0 00-2-2H4a2 2 0 01-2-2V5a2 2 0 012-2h12a2 2 0 012 2v12z" /></svg>${property.location}</p>
                             <p class="text-2xl font-extrabold text-brand-primary">

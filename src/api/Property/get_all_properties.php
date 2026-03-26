@@ -67,7 +67,6 @@ if (!isset($conn) || !$conn || $conn->connect_error) {
     exit();
 }
 
-// Clear any output that might have been generated
 ob_end_clean();
 
 try {
@@ -77,13 +76,21 @@ try {
         $limit = 50; // Prevent excessively large requests
     }
 
-    $sql = "CALL sp_get_random_listings_for_users(?)";
+    $sql = "SELECT 
+                l.listing_id, l.property_id, l.owner_user_id, l.percentage_available, 
+                l.percentage_original, l.price_total, l.status, l.created_at,
+                p.property_name, p.property_type, p.description, p.location, 
+                p.estimated_value, p.property_image, p.verification_status
+            FROM listings l
+            JOIN properties p ON p.property_id = l.property_id
+            WHERE l.status IN ('Active', 'Partially_Fulfilled')
+            ORDER BY RAND()
+            LIMIT ?";
     
     if (!$stmt = $conn->prepare($sql)) {
         throw new Exception("Prepare failed: " . $conn->error);
     }
     
-    // Bind only the p_limit parameter as defined in the stored procedure.
     if (!$stmt->bind_param("i", $limit)) {
         throw new Exception("Bind param failed: " . $stmt->error);
     }

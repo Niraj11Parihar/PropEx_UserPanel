@@ -87,7 +87,16 @@ if (!$listing_details) {
         <div class="bg-white rounded-3xl shadow-xl p-8 md:p-12 lg:p-16 mb-8">
             <div class="flex flex-col lg:flex-row gap-8">
                 <div class="lg:w-1/2">
-                    <img src="<?php echo url('AdminPanel/public/' . htmlspecialchars($listing_details['property_image'])); ?>" alt="<?php echo htmlspecialchars($listing_details['property_name']); ?>" class="w-full h-96 object-cover rounded-2xl shadow-md">
+                    <?php
+                    $propertyImage = '';
+                    if (!empty($listing_details['property_image'])) {
+                        $imgPath = ltrim($listing_details['property_image'], '/');
+                        $propertyImage = adminPublicUrl($imgPath);
+                    } else {
+                        $propertyImage = 'https://via.placeholder.com/600x400.png?text=No+Image';
+                    }
+                    ?>
+                    <img src="<?php echo $propertyImage; ?>" alt="<?php echo htmlspecialchars($listing_details['property_name']); ?>" class="w-full h-96 object-cover rounded-2xl shadow-md">
                 </div>
                 <div class="lg:w-1/2">
                     <h1 class="text-4xl md:text-5xl font-extrabold text-gray-900 mb-2"><?php echo htmlspecialchars($listing_details['property_name']); ?></h1>
@@ -175,9 +184,37 @@ if (!$listing_details) {
         const purchaseModal = document.getElementById('purchaseModal');
         const closeModalBtn = document.getElementById('closeModalBtn');
         const confirmPurchaseBtn = document.getElementById('confirmPurchaseBtn');
+        
+        // Fetch verification status from PHP
+        <?php
+        $isUserVerified = false;
+        if (isset($_SESSION['user_id'])) {
+            $stmt_v = $conn->prepare("SELECT identity_verification_status FROM users WHERE user_id = ?");
+            $stmt_v->bind_param("i", $_SESSION['user_id']);
+            $stmt_v->execute();
+            $res_v = $stmt_v->get_result();
+            if ($res_v->num_rows > 0) {
+                $v_data = $res_v->fetch_assoc();
+                $isUserVerified = ($v_data['identity_verification_status'] === 'Verified');
+            }
+        }
+        ?>
+        const isUserVerified = <?php echo $isUserVerified ? 'true' : 'false'; ?>;
 
         if (buyButton) {
             buyButton.addEventListener('click', function() {
+                if (!isUserVerified) {
+                    showCustomModal({
+                        title: 'Verification Required',
+                        message: 'Please complete your profile verification to purchase property shares.',
+                        buttons: [{
+                            text: 'Go to Profile',
+                            class: 'bg-brand-primary text-white',
+                            onClick: () => window.location.href = baseUrl('templates/profile.php')
+                        }]
+                    });
+                    return;
+                }
                 purchaseModal.classList.remove('hidden');
             });
         }
@@ -190,14 +227,23 @@ if (!$listing_details) {
 
         if (confirmPurchaseBtn) {
             confirmPurchaseBtn.addEventListener('click', async function() {
+                if (!isUserVerified) return;
+
                 try {
                     const buyer_user_id = <?php echo isset($_SESSION['user_id']) ? $_SESSION['user_id'] : 'null'; ?>;
                     const listing_id = <?php echo $listing_id; ?>;
                     const percentage_to_buy = <?php echo $listing_details['percentage_available']; ?>;
 
                     if (!buyer_user_id) {
-                        alert('You must be logged in to purchase a property.');
-                        window.location.href = baseUrl('templates/login.php');
+                        showCustomModal({
+                            title: 'Login Required',
+                            message: 'You must be logged in to purchase a property.',
+                            buttons: [{
+                                text: 'Login',
+                                class: 'bg-brand-primary text-white',
+                                onClick: () => window.location.href = baseUrl('templates/login.php')
+                            }]
+                        });
                         return;
                     }
                     
@@ -219,14 +265,29 @@ if (!$listing_details) {
                     const data = await response.json();
 
                     if (data.success) {
-                        alert('Congratulations! Your purchase was successful and ownership has been transferred.');
-                        window.location.reload();
+                        showCustomModal({
+                            title: 'Success!',
+                            message: 'Congratulations! Your purchase was successful and ownership has been transferred.',
+                            buttons: [{
+                                text: 'Great!',
+                                class: 'bg-brand-primary text-white',
+                                onClick: () => window.location.reload()
+                            }]
+                        });
                     } else {
-                        alert('Purchase failed: ' + data.message);
+                        showCustomModal({
+                            title: 'Purchase Failed',
+                            message: 'Purchase failed: ' + data.message,
+                            buttons: [{ text: 'Close', class: 'bg-gray-100' }]
+                        });
                     }
                 } catch (error) {
                     console.error('Purchase error:', error);
-                    alert('An unexpected error occurred. Please try again.');
+                    showCustomModal({
+                        title: 'Error',
+                        message: 'An unexpected error occurred. Please try again.',
+                        buttons: [{ text: 'Close', class: 'bg-gray-100' }]
+                    });
                 } finally {
                     if (confirmPurchaseBtn) {
                         confirmPurchaseBtn.innerText = 'Confirm & Pay';

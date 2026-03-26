@@ -110,6 +110,28 @@
       </div>
     </nav>
 
+    <!-- Custom Modal System -->
+    <!-- Custom Modal System -->
+    <div id="custom-modal-overlay" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[9999] hidden flex items-center justify-center p-4">
+      <div id="custom-modal-container" class="bg-white rounded-[2rem] shadow-2xl max-w-md w-full transform transition-all scale-95 opacity-0 duration-300 overflow-hidden">
+        <div class="p-8 md:p-10 text-center">
+          <div id="modal-icon" class="mb-6 inline-flex p-4 rounded-full bg-blue-50 text-brand-primary">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+            </svg>
+          </div>
+          <h3 id="modal-title" class="text-2xl md:text-3xl font-extrabold mb-4" style="color: var(--brand-primary);">Notification</h3>
+          <p id="modal-message" class="text-gray-600 mb-8 leading-relaxed font-medium text-lg">Message</p>
+          <div id="modal-buttons" class="flex flex-col gap-3">
+            <!-- Buttons will be injected here -->
+          </div>
+          <button onclick="window.closeCustomModal()" class="mt-6 text-sm text-gray-400 hover:text-gray-600 transition-colors uppercase tracking-widest font-bold">
+            Dismiss
+          </button>
+        </div>
+      </div>
+    </div>
+
     <!-- Script -->
     <script>
       const mobileBtn = document.getElementById('mobile-menu-btn');
@@ -118,6 +140,62 @@
       mobileBtn.addEventListener('click', () => {
         mobileMenu.classList.toggle('hidden');
       });
+
+      // Modal Logic
+      function showCustomModal(options) {
+        const overlay = document.getElementById('custom-modal-overlay');
+        const container = document.getElementById('custom-modal-container');
+        const title = document.getElementById('modal-title');
+        const message = document.getElementById('modal-message');
+        const buttonContainer = document.getElementById('modal-buttons');
+
+        // Reset
+        title.innerText = options.title || 'Notification';
+        message.innerText = options.message || '';
+        buttonContainer.innerHTML = '';
+
+        // Create buttons
+        const buttons = options.buttons || [{
+          text: 'Okay',
+          class: 'bg-brand-primary text-white',
+          style: { backgroundColor: 'var(--brand-primary)' },
+          onClick: () => window.closeCustomModal()
+        }];
+
+        buttons.forEach(btn => {
+          const button = document.createElement('button');
+          button.innerText = btn.text;
+          button.className = `px-6 py-4 rounded-2xl font-bold transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 w-full shadow-md hover:shadow-lg transform active:scale-95 text-lg ${btn.class || 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`;
+
+          if (btn.style) {
+            Object.assign(button.style, btn.style);
+          }
+
+          button.onclick = () => {
+            if (btn.onClick) btn.onClick();
+            else window.closeCustomModal();
+          };
+          buttonContainer.appendChild(button);
+        });
+
+        // Show modal
+        overlay.classList.remove('hidden');
+        overlay.classList.add('flex');
+        setTimeout(() => {
+          container.classList.remove('scale-95', 'opacity-0');
+          container.classList.add('scale-100', 'opacity-100');
+        }, 10);
+
+        window.closeCustomModal = function() {
+          container.classList.remove('scale-100', 'opacity-100');
+          container.classList.add('scale-95', 'opacity-0');
+          setTimeout(() => {
+            overlay.classList.add('hidden');
+            overlay.classList.remove('flex');
+            if (options.onClose) options.onClose();
+          }, 300);
+        };
+      }
     </script>
 
   </body>

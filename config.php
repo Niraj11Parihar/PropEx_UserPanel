@@ -7,6 +7,15 @@ function getBasePath() {
     // If we're in a subdirectory, get the base path
     // Example: /PropEx/UserPanel/index.php -> /PropEx/UserPanel
     // Example: /index.php -> /
+    
+    // Normalize slashes
+    $scriptDir = str_replace('\\', '/', $scriptDir);
+    
+    // If running from templates directory, move up one level to UserPanel root
+    if (basename($scriptDir) === 'templates') {
+        $scriptDir = dirname($scriptDir);
+    }
+
     if ($scriptDir === '/' || $scriptDir === '\\') {
         return '';
     }
@@ -63,5 +72,15 @@ $conn = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
 // Check connection
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
+}
+
+// --- Silent Auto-Migration for admin_notes feature ---
+try {
+    $check_col = $conn->query("SHOW COLUMNS FROM users LIKE 'admin_notes'");
+    if ($check_col && $check_col->num_rows === 0) {
+        $conn->query("ALTER TABLE users ADD COLUMN admin_notes TEXT DEFAULT NULL AFTER identity_verification_status");
+    }
+} catch (Exception $e) {
+    // Fail silently
 }
 ?>

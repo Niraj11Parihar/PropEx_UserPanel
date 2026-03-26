@@ -1,5 +1,36 @@
 <?php
 // PropEx/UserPanel/list-property.php
+session_start();
+require_once __DIR__ . '/../config.php';
+
+// Check if user is logged in
+if (!isset($_SESSION['user_id'])) {
+    header("Location: " . url('templates/login.php'));
+    exit();
+}
+
+$user_id = $_SESSION['user_id'];
+$isUserVerified = false;
+
+try {
+    $stmt = $conn->prepare("SELECT identity_verification_status FROM users WHERE user_id = ?");
+    $stmt->bind_param("i", $user_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    if ($result->num_rows > 0) {
+        $userData = $result->fetch_assoc();
+        $isUserVerified = ($userData['identity_verification_status'] === 'Verified');
+    }
+    $stmt->close();
+} catch (Exception $e) {
+    // Fail safe
+}
+
+if (!$isUserVerified) {
+    header("Location: " . url('templates/home.php'));
+    exit();
+}
+
 include __DIR__ . '/../src/includes/header.php';
 include __DIR__ . '/../src/includes/backButton.php';
 ?>

@@ -47,7 +47,7 @@ include __DIR__ . '/../src/includes/header.php';
         <div class="message message-error" style="padding: 15px; border-radius: 5px; margin: 20px 0; background: rgba(220, 38, 38, 0.1); border: 1px solid var(--accent-negative); color: var(--accent-negative);"><?= $errors['general'] ?></div>
     <?php endif; ?>
 
-    <form method="POST" action="register.php">
+    <form id="registerForm" method="POST" action="register.php">
         <div class="form-group" style="margin-bottom: 20px;">
             <label for="fullName" style="display: block; margin-bottom: 8px; color: var(--text-primary); font-weight: 500; font-size: 14px;">Full Name</label>
             <input type="text" name="fullName" id="fullName" class="form-control"
@@ -69,6 +69,9 @@ include __DIR__ . '/../src/includes/header.php';
         <div class="form-group" style="margin-bottom: 20px;">
             <label for="password" style="display: block; margin-bottom: 8px; color: var(--text-primary); font-weight: 500; font-size: 14px;">Password</label>
             <input type="password" name="password" id="password" class="form-control" required style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 5px; font-size: 16px; box-sizing: border-box;">
+            <small id="passwordHelp" style="display: block; margin-top: 5px; font-size: 12px; color: var(--text-secondary);">
+                Min 8 characters, 1 alphabet, 1 number, and 1 special character.
+            </small>
             <?php if (isset($errors['password'])): ?>
                 <small style="display: block; margin-top: 5px; font-size: 12px; color: var(--accent-negative);"><?= $errors['password'] ?></small>
             <?php endif; ?>
@@ -77,6 +80,7 @@ include __DIR__ . '/../src/includes/header.php';
         <div class="form-group" style="margin-bottom: 20px;">
             <label for="confirm_password" style="display: block; margin-bottom: 8px; color: var(--text-primary); font-weight: 500; font-size: 14px;">Confirm Password</label>
             <input type="password" name="confirm_password" id="confirm_password" class="form-control" required style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 5px; font-size: 16px; box-sizing: border-box;">
+            <small id="confirmHelp" style="display: block; margin-top: 5px; font-size: 12px; color: var(--accent-negative); display: none;">Passwords do not match.</small>
             <?php if (isset($errors['confirm_password'])): ?>
                 <small style="display: block; margin-top: 5px; font-size: 12px; color: var(--accent-negative);"><?= $errors['confirm_password'] ?></small>
             <?php endif; ?>
@@ -89,5 +93,53 @@ include __DIR__ . '/../src/includes/header.php';
         </div>
     </form>
 </div>
+
+<script>
+document.getElementById('registerForm').addEventListener('submit', function(e) {
+    const password = document.getElementById('password').value;
+    const confirmPassword = document.getElementById('confirm_password').value;
+    const passwordHelp = document.getElementById('passwordHelp');
+    const confirmHelp = document.getElementById('confirmHelp');
+    
+    let isValid = true;
+    
+    // Password validation regex
+    const lengthValid = password.length >= 8;
+    const alphabetValid = /[A-Za-z]/.test(password);
+    const numberValid = /[0-9]/.test(password);
+    const specialValid = /[^A-Za-z0-9]/.test(password);
+    
+    if (!(lengthValid && alphabetValid && numberValid && specialValid)) {
+        passwordHelp.style.color = 'var(--accent-negative)';
+        isValid = false;
+    } else {
+        passwordHelp.style.color = 'var(--text-secondary)';
+    }
+    
+    if (password !== confirmPassword) {
+        confirmHelp.style.display = 'block';
+        isValid = false;
+    } else {
+        confirmHelp.style.display = 'none';
+    }
+    
+    if (!isValid) {
+        e.preventDefault();
+    }
+});
+
+// Optional: real-time feedback
+document.getElementById('confirm_password').addEventListener('input', function() {
+    const password = document.getElementById('password').value;
+    const confirmPassword = this.value;
+    const confirmHelp = document.getElementById('confirmHelp');
+    
+    if (password !== confirmPassword) {
+        confirmHelp.style.display = 'block';
+    } else {
+        confirmHelp.style.display = 'none';
+    }
+});
+</script>
 </main>
 <?php include __DIR__ . '/../src/includes/footer.php'; ?>

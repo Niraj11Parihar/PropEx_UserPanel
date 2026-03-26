@@ -16,13 +16,13 @@ session_start();
 
 // Fix path to config.php - from UserPanel/src/api/User/ to UserPanel/
 // Normalize path separators for cross-platform compatibility
-$config_path = dirname(dirname(__DIR__)) . DIRECTORY_SEPARATOR . 'config.php';
+$config_path = dirname(dirname(dirname(__DIR__))) . DIRECTORY_SEPARATOR . 'config.php';
 $config_path = realpath($config_path);
 
 if (!$config_path || !file_exists($config_path)) {
     ob_end_clean();
     http_response_code(500);
-    $expected_path = dirname(dirname(__DIR__)) . DIRECTORY_SEPARATOR . 'config.php';
+    $expected_path = dirname(dirname(dirname(__DIR__))) . DIRECTORY_SEPARATOR . 'config.php';
     echo json_encode(['success' => false, 'message' => 'Config file not found. Expected at: ' . $expected_path . ' (resolved: ' . ($config_path ?: 'not found') . ')']);
     exit();
 }
@@ -167,12 +167,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if ($stmt->execute()) {
                 echo json_encode(['success' => true, 'message' => 'Verification details submitted successfully! Pending approval.']);
             } else {
-                echo json_encode(['success' => false, 'message' => 'Error saving verification details.']);
+                echo json_encode(['success' => false, 'message' => 'Error saving verification details: ' . $stmt->error]);
             }
             $stmt->close();
         } catch (Exception $e) {
             http_response_code(500);
-            echo json_encode(['success' => false, 'message' => 'An error occurred while saving your verification data.']);
+            echo json_encode(['success' => false, 'message' => 'An error occurred while saving your verification data: ' . $e->getMessage()]);
         }
     } else if (isset($_POST['change_password'])) {
         $current_password = trim($_POST['current_password'] ?? '');
@@ -189,6 +189,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         if (strlen($new_password) < 8) {
             echo json_encode(['success' => false, 'message' => "New password must be at least 8 characters long."]);
+            exit();
+        }
+        if (!preg_match('/[A-Za-z]/', $new_password)) {
+            echo json_encode(['success' => false, 'message' => "New password must contain at least one alphabet."]);
+            exit();
+        }
+        if (!preg_match('/[0-9]/', $new_password)) {
+            echo json_encode(['success' => false, 'message' => "New password must contain at least one number."]);
+            exit();
+        }
+        if (!preg_match('/[^A-Za-z0-9]/', $new_password)) {
+            echo json_encode(['success' => false, 'message' => "New password must contain at least one special character."]);
             exit();
         }
         

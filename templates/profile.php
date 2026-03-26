@@ -14,7 +14,7 @@ $user_id = $_SESSION['user_id'];
 
 try {
     $stmt = $conn->prepare("SELECT full_name, email, phone_number, address, 
-        aadhaar_hash, aadhaar_document_url, pan_number, pan_document_url, identity_verification_status 
+        aadhaar_hash, aadhaar_document_url, pan_number, pan_document_url, identity_verification_status, admin_notes 
         FROM users WHERE user_id = ?");
     $stmt->bind_param("i", $user_id);
     $stmt->execute();
@@ -131,35 +131,65 @@ include __DIR__ . '/../src/includes/header.php';
             <div id="section-verification" class="tab-content hidden">
                 <h2 class="text-3xl font-bold mb-8 text-gray-800 text-center md:text-left">Identity Verification</h2>
 
-                <div class="bg-gray-100 p-6 rounded-xl mb-8 flex items-center justify-between shadow-inner">
-                    <span class="text-lg font-medium text-gray-700">Status</span>
-                    <span id="verification-status" class="px-4 py-1.5 rounded-full text-sm font-semibold text-white <?php 
-                        $status = $userData['identity_verification_status'] ?? 'Not Verified';
-                        if ($status === 'Verified') echo 'bg-green-600';
-                        elseif ($status === 'Pending') echo 'bg-gray-500';
-                        else echo 'bg-red-600';
-                    ?>"><?php echo htmlspecialchars($status); ?></span>
+                <div class="bg-gray-100 p-6 rounded-2xl mb-8 shadow-inner">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-lg font-bold text-gray-700">Verification Status</span>
+                        <span id="verification-status" class="px-5 py-2 rounded-full text-base font-extrabold text-white shadow-md <?php 
+                            $status = $userData['identity_verification_status'] ?? 'Not Verified';
+                            if ($status === 'Verified') echo 'bg-green-600';
+                            elseif ($status === 'Pending') echo 'bg-orange-500';
+                            else echo 'bg-red-600';
+                        ?>"><?php echo htmlspecialchars($status); ?></span>
+                    </div>
+
+                    <?php if (!empty($userData['admin_notes'])): ?>
+                        <div class="mt-4 p-5 rounded-xl bg-white border-l-4 border-orange-500 shadow-sm">
+                            <p class="text-sm font-black text-gray-500 uppercase tracking-widest mb-2 flex items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1 text-orange-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                                Admin Feedback:
+                            </p>
+                            <p class="text-gray-800 font-medium italic leading-relaxed"><?php echo nl2br(htmlspecialchars($userData['admin_notes'])); ?></p>
+                        </div>
+                    <?php endif; ?>
                 </div>
 
                 <div class="grid md:grid-cols-2 gap-6 mb-10">
-                    <div class="bg-white p-6 rounded-xl shadow-md border border-gray-200 text-center">
+                    <div id="aadhaar-card-preview" class="bg-white p-6 rounded-xl shadow-md border border-gray-200 text-center">
                         <label class="block text-lg font-semibold text-gray-800 mb-3">Aadhaar</label>
-                        <p class="text-sm text-gray-500 font-mono mb-4"><?php echo htmlspecialchars($userData['aadhaar_masked'] ?? 'Not provided'); ?></p>
-                        <?php if (!empty($userData['aadhaar_doc_url'])): ?>
+                        <?php 
+                            $v_status = $userData['identity_verification_status'] ?? 'Not Verified';
+                            $has_doc = !empty($userData['aadhaar_doc_url']);
+                            
+                            if ($v_status === 'Verified'): 
+                                // Show nothing
+                            elseif (!$has_doc):
+                                echo '<p class="text-sm text-gray-400 font-bold mb-4 uppercase tracking-wider">Not Uploaded</p>';
+                            elseif ($v_status === 'Rejected' || $v_status === 'Not Verified'):
+                                echo '<p class="text-sm text-red-600 font-bold mb-4 uppercase tracking-wider">Not Approved</p>';
+                            else: ?>
+                                <p class="text-sm text-gray-500 font-mono mb-4"><?php echo htmlspecialchars($userData['aadhaar_masked'] ?? 'Not provided'); ?></p>
+                        <?php endif; ?>
+                        <?php if ($has_doc): ?>
                             <img src="<?php echo htmlspecialchars($userData['aadhaar_doc_url']); ?>" alt="Aadhaar Document"
                                 class="rounded-lg shadow border border-gray-300 w-full max-h-56 object-contain">
-                        <?php else: ?>
-                            <p class="text-sm text-gray-400">No document uploaded</p>
                         <?php endif; ?>
                     </div>
-                    <div class="bg-white p-6 rounded-xl shadow-md border border-gray-200 text-center">
+                    <div id="pan-card-preview" class="bg-white p-6 rounded-xl shadow-md border border-gray-200 text-center">
                         <label class="block text-lg font-semibold text-gray-800 mb-3">PAN</label>
-                        <p class="text-sm text-gray-500 font-mono mb-4"><?php echo htmlspecialchars($userData['pan_masked'] ?? 'Not provided'); ?></p>
-                        <?php if (!empty($userData['pan_doc_url'])): ?>
+                        <?php 
+                            $has_pan = !empty($userData['pan_doc_url']);
+                            if ($v_status === 'Verified'): 
+                                // Show nothing
+                            elseif (!$has_pan):
+                                echo '<p class="text-sm text-gray-400 font-bold mb-4 uppercase tracking-wider">Not Uploaded</p>';
+                            elseif ($v_status === 'Rejected' || $v_status === 'Not Verified'):
+                                echo '<p class="text-sm text-red-600 font-bold mb-4 uppercase tracking-wider">Not Approved</p>';
+                            else: ?>
+                                <p class="text-sm text-gray-500 font-mono mb-4"><?php echo htmlspecialchars($userData['pan_masked'] ?? 'Not provided'); ?></p>
+                        <?php endif; ?>
+                        <?php if ($has_pan): ?>
                             <img src="<?php echo htmlspecialchars($userData['pan_doc_url']); ?>" alt="PAN Document"
                                 class="rounded-lg shadow border border-gray-300 w-full max-h-56 object-contain">
-                        <?php else: ?>
-                            <p class="text-sm text-gray-400">No document uploaded</p>
                         <?php endif; ?>
                     </div>
                 </div>
@@ -210,11 +240,15 @@ include __DIR__ . '/../src/includes/header.php';
                         <label for="new_password" class="block text-sm font-medium text-gray-700 mb-2">New Password</label>
                         <input type="password" id="new_password" name="new_password" required
                             class="w-full p-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-brand-primary focus:border-transparent transition-colors duration-200">
+                        <small id="newPasswordHelp" class="block mt-1 text-xs text-gray-500">
+                            Min 8 characters, 1 alphabet, 1 number, and 1 special character.
+                        </small>
                     </div>
                     <div>
                         <label for="confirm_new_password" class="block text-sm font-medium text-gray-700 mb-2">Confirm Password</label>
                         <input type="password" id="confirm_new_password" name="confirm_new_password" required
                             class="w-full p-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-brand-primary focus:border-transparent transition-colors duration-200">
+                        <small id="confirmNewHelp" class="hidden mt-1 text-xs text-red-600">Passwords do not match.</small>
                     </div>
                     <div class="flex justify-end pt-4">
                         <button type="submit" class="w-full md:w-auto px-8 py-3 bg-brand-primary text-white font-semibold rounded-lg hover:bg-brand-secondary transition-colors duration-200 shadow-lg">
@@ -284,6 +318,37 @@ include __DIR__ . '/../src/includes/header.php';
 
         document.getElementById('password-form').addEventListener('submit', async (event) => {
             event.preventDefault();
+            const newPassword = document.getElementById('new_password').value;
+            const confirmNewPassword = document.getElementById('confirm_new_password').value;
+            const passwordHelp = document.getElementById('newPasswordHelp');
+            const confirmHelp = document.getElementById('confirmNewHelp');
+            
+            // Validation
+            const lengthValid = newPassword.length >= 8;
+            const alphabetValid = /[A-Za-z]/.test(newPassword);
+            const numberValid = /[0-9]/.test(newPassword);
+            const specialValid = /[^A-Za-z0-9]/.test(newPassword);
+            
+            let isValid = true;
+            
+            if (!(lengthValid && alphabetValid && numberValid && specialValid)) {
+                passwordHelp.classList.remove('text-gray-500');
+                passwordHelp.classList.add('text-red-600');
+                isValid = false;
+            } else {
+                passwordHelp.classList.remove('text-red-600');
+                passwordHelp.classList.add('text-gray-500');
+            }
+            
+            if (newPassword !== confirmNewPassword) {
+                confirmHelp.classList.remove('hidden');
+                isValid = false;
+            } else {
+                confirmHelp.classList.add('hidden');
+            }
+            
+            if (!isValid) return;
+
             const formData = new FormData(event.target);
             try {
                 const response = await fetch(event.target.action, {
@@ -291,12 +356,36 @@ include __DIR__ . '/../src/includes/header.php';
                     body: formData
                 });
                 const result = await response.json();
+                
+                // Detailed console logging for debugging
+                if (!result.success) {
+                    console.error('Submission Error:', result);
+                } else {
+                    console.log('Submission Success:', result);
+                }
+                
                 showMessage(result.message, result.success);
                 if (result.success) {
-                    event.target.reset();
+                    if (event.target.id === 'password-form') {
+                        event.target.reset();
+                    } else {
+                        setTimeout(() => window.location.reload(), 1500);
+                    }
                 }
             } catch (error) {
-                showMessage('Network error: ' + error.message, false);
+                console.error('Fatal API Error:', error);
+                showMessage('Network error or server unavailable: ' + error.message, false);
+            }
+        });
+
+        // Real-time match check
+        document.getElementById('confirm_new_password').addEventListener('input', function() {
+            const newPassword = document.getElementById('new_password').value;
+            const confirmHelp = document.getElementById('confirmNewHelp');
+            if (newPassword !== this.value) {
+                confirmHelp.classList.remove('hidden');
+            } else {
+                confirmHelp.classList.add('hidden');
             }
         });
         
@@ -333,6 +422,34 @@ include __DIR__ . '/../src/includes/header.php';
                 }
             });
         });
+
+        // Image Preview Logic
+        function setupPreview(inputId, containerId) {
+            const input = document.getElementById(inputId);
+            const container = document.getElementById(containerId);
+            if (!input || !container) return;
+
+            input.addEventListener('change', function() {
+                const file = this.files[0];
+                if (file && file.type.startsWith('image/')) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        let img = container.querySelector('img');
+                        if (!img) {
+                            const p = container.querySelector('p.text-gray-400');
+                            if (p) p.remove();
+                            img = document.createElement('img');
+                            img.className = 'rounded-lg shadow border border-gray-300 w-full max-h-56 object-contain';
+                            container.appendChild(img);
+                        }
+                        img.src = e.target.result;
+                    }
+                    reader.readAsDataURL(file);
+                }
+            });
+        }
+        setupPreview('aadhaar_document', 'aadhaar-card-preview');
+        setupPreview('pan_document', 'pan-card-preview');
     });
 </script>
 <?php include __DIR__ . '/../src/includes/footer.php'; ?>
